@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h2 class="title">Selectionnez une annee academique</h2>
+    <h2 class="title">Sélectionnez une année académique</h2>
 
     <div class="grid">
       <button
@@ -37,13 +37,10 @@ defineProps<{
 function handleYearClick(year: number) {
   emit('yearSelect', year)
 
-  // Navigate to semesters page after 300ms to show selection feedback
-  setTimeout(() => {
-    router.push({
-      name: 'Semesters',
-      query: { year },
-    })
-  }, 300)
+  router.push({
+    name: 'Filiere',
+    query: { year },
+  })
 }
 </script>
 
@@ -51,7 +48,8 @@ function handleYearClick(year: number) {
 .title {
   margin: 18px 0 14px;
   color: #20174f;
-  font-size: 36px;
+  font-size: 22px;
+  font-weight: 600;
   line-height: 1.15;
 }
 
@@ -82,13 +80,9 @@ function handleYearClick(year: number) {
   min-height: 78px;
 }
 
-.grid :deep(.year-label) {
-  font-size: 38px;
-}
-
 @media (max-width: 1200px) {
   .title {
-    font-size: 32px;
+    font-size: 20px;
   }
 
   .grid {
@@ -98,15 +92,11 @@ function handleYearClick(year: number) {
 
 @media (max-width: 760px) {
   .title {
-    font-size: 26px;
+    font-size: 18px;
   }
 
   .grid {
     grid-template-columns: 1fr;
-  }
-
-  .grid :deep(.year-label) {
-    font-size: 30px;
   }
 }
 </style>

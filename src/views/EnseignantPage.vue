@@ -1,10 +1,9 @@
-<!-- filepath: c:\Users\chhak\Documents\ISIS\S6\ptut\espace_prof\espace_prof\src\views\EnseignantPage.vue -->
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 import AnneeAcademique from '../components/AnneeAcademique.vue'
-import UeListe from '../components/UeListe.vue'
+import EnseignementsList from '../components/EnseignementsList.vue'
 
 const enseignant = reactive({
   prenom: 'Jean',
@@ -28,29 +27,35 @@ const menuItems = computed(() => [
   { key: 'profile', label: 'Mon Profil' },
 ])
 
-const ues = ref([
+// Enseignements groupés par promotion (réactif — à remplacer par appel API)
+const promotions = ref([
   {
-    id: 1,
-    code: 'M501',
-    title: 'Fondamentaux',
-    subtitle: 'Mathématiques et sciences de base',
-    progress: 75,
+    id: 'fie3',
+    name: 'FIE 3',
+    ues: [
+      { id: 1, code: 'UE501', title: 'Fondamentaux', subtitle: 'Mathématiques et sciences de base', progress: 75, completed: 45, total: 60, matieres: 2, icon: 'book' as const },
+      { id: 2, code: 'UE502', title: 'Informatique', subtitle: 'Développement logiciel et systèmes', progress: 87, completed: 52, total: 60, matieres: 3, icon: 'code' as const },
+    ],
   },
   {
-    id: 2,
-    code: 'I550',
-    title: 'Informatique',
-    subtitle: 'Développement logiciel et systèmes',
-    progress: 45,
+    id: 'fie4',
+    name: 'FIE 4',
+    ues: [
+      { id: 3, code: 'UE503', title: 'Langues & Communication', subtitle: 'Anglais technique et communication', progress: 63, completed: 38, total: 60, matieres: 2, icon: 'translate' as const },
+      { id: 4, code: 'UE504', title: 'Management & Projet', subtitle: 'Gestion de projet et méthodologies', progress: 33, completed: 20, total: 60, matieres: 2, icon: 'people' as const },
+    ],
   },
-  { id: 3, code: 'G601', title: 'Gestion de projet', subtitle: 'Agile', progress: 80 },
+  {
+    id: 'fia3',
+    name: 'FIA 3',
+    ues: [
+      { id: 5, code: 'UE502', title: 'Informatique', subtitle: 'Développement logiciel et systèmes', progress: 90, completed: 54, total: 60, matieres: 3, icon: 'code' as const },
+    ],
+  },
 ])
 
 function handleMenuSelect(item: { to?: string }) {
-  if (!item.to || item.to === route.path) {
-    return
-  }
-
+  if (!item.to || item.to === route.path) return
   router.push(item.to)
 }
 </script>
@@ -75,12 +80,13 @@ function handleMenuSelect(item: { to?: string }) {
         </div>
       </header>
 
-      <section class="year-section">
-        <AnneeAcademique :start-year="academicYear.start" :end-year="academicYear.end" />
-      </section>
-
-      <section class="ue-section">
-        <UeListe :ues="ues" />
+      <section class="promos-section">
+        <EnseignementsList
+          v-for="promo in promotions"
+          :key="promo.id"
+          :promo-name="promo.name"
+          :ues="promo.ues"
+        />
       </section>
     </main>
   </div>
@@ -161,27 +167,11 @@ function handleMenuSelect(item: { to?: string }) {
   overflow-wrap: anywhere;
 }
 
-.year-section {
+.promos-section {
   display: flex;
-  justify-content: center;
-  margin: 12px 0 14px;
-}
-
-.ue-section {
-  margin: 8px auto 0;
-  max-width: 760px;
-  width: 100%;
-}
-
-.year-section :deep(.academic-year-card) {
-  width: min(100%, 360px);
-}
-
-.ue-section :deep(.ue-list) {
-  width: 100%;
-}
-
-.ue-section :deep(.ue-card) {
+  flex-direction: column;
+  gap: 8px;
+  max-width: 860px;
   width: 100%;
 }
 

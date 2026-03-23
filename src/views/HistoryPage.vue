@@ -1,12 +1,12 @@
 <template>
   <div class="page-layout">
     <aside class="sidebar-zone">
-      <Sidebar :items="menuItems" logout-label="Deconnexion" @select="handleMenuSelect" />
+      <Sidebar :items="menuItems" logout-label="Déconnexion" @select="handleMenuSelect" />
     </aside>
 
     <main class="dashboard-zone">
       <HistoryTopBar
-        title="Bonjour, Professeur"
+        :title="pageTitle"
         subtitle="Espace enseignant"
         base-breadcrumb="Historique"
         :selected-year="selectedYear ? `${selectedYear}–${selectedYear + 1}` : undefined"
@@ -27,8 +27,16 @@ import HistoryTopBar from '@/components/HistoryTopBar.vue'
 import AcademicYearList from '@/components/AcademicYearList.vue'
 
 const enseignant = reactive({
+  prenom: '',
+  nom: '',
   email: 'prof@univ-jfc.fr',
 })
+
+const pageTitle = computed(() =>
+  enseignant.prenom
+    ? `Bonjour, ${enseignant.prenom} ${enseignant.nom} 👋`
+    : `Bonjour, Professeur 👋`,
+)
 
 const route = useRoute()
 const router = useRouter()

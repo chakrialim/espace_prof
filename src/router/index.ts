@@ -5,12 +5,16 @@ import HomePage from '../views/HomePage.vue'
 import EnseignantPage from '../views/EnseignantPage.vue'
 import HistoryPage from '../views/HistoryPage.vue'
 import SemesterPage from '../views/SemesterPage.vue'
+import FilierePage from '../views/FilierePage.vue'
+import EnseignementsPage from '../views/EnseignementsPage.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
   { path: '/enseignant', name: 'Enseignant', component: EnseignantPage },
   { path: '/history', name: 'History', component: HistoryPage },
   { path: '/semesters', name: 'Semesters', component: SemesterPage },
+  { path: '/filiere', name: 'Filiere', component: FilierePage },
+  { path: '/enseignements', name: 'Enseignements', component: EnseignementsPage },
   // Catch-all
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]

@@ -1,9 +1,9 @@
 <template>
   <section>
-    <h2 class="title">Sélectionnez un semestre – {{ startYear }}–{{ endYear }}</h2>
+    <h2 class="title">Sélectionnez un semestre – {{ titleSuffix ?? `${startYear}–${endYear}` }}</h2>
 
-    <div class="grid">
-      <SemesterCard v-for="semester in semesters" :key="semester.id" :semester="semester" />
+    <div class="grid" :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }">
+      <SemesterCard v-for="semester in semesters" :key="semester.id" :semester="semester" :year="startYear" :promo="promoId" />
     </div>
   </section>
 </template>
@@ -11,18 +11,24 @@
 <script setup lang="ts">
 import SemesterCard from '@/components/SemesterCard.vue'
 
-defineProps<{
-  startYear: number
-  endYear: number
-  semesters: Array<{
-    id: number
-    label: string
-    title: string
-    completed: number
-    total: number
-    progress: number
-  }>
-}>()
+withDefaults(
+  defineProps<{
+    startYear: number
+    endYear: number
+    semesters: Array<{
+      id: number
+      label: string
+      title: string
+      completed: number
+      total: number
+      progress: number
+    }>
+    columns?: number
+    titleSuffix?: string
+    promoId?: string
+  }>(),
+  { columns: 5 },
+)
 </script>
 
 <style scoped>
@@ -35,31 +41,16 @@ defineProps<{
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
 }
 
-@media (max-width: 1400px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
 @media (max-width: 1000px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .title {
     font-size: 28px;
   }
 }
 
 @media (max-width: 760px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .title {
     font-size: 24px;
     margin: 16px 0 18px;
@@ -67,10 +58,6 @@ defineProps<{
 }
 
 @media (max-width: 480px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
   .title {
     font-size: 20px;
   }

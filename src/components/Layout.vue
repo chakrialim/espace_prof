@@ -21,7 +21,7 @@
         <AnneeAcademique :start-year="academicYear.start" :end-year="academicYear.end" />
       </div>
 
-      <UeListe :ues="ues" />
+      <EnseignementsList :ues="ues" />
     </main>
   </div>
 </template>
@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import AnneeAcademique from '@/components/AnneeAcademique.vue'
-import UeListe from '@/components/UeListe.vue'
+import EnseignementsList from '@/components/EnseignementsList.vue'
 import ProfSidebar from '@/components/ProfSidebar.vue'
 
 const user = reactive({

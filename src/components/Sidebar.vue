@@ -5,7 +5,7 @@
       <div class="brand">
         <div class="logo"><img src="/isis-2.png" alt="Logo" /></div>
         <div>
-          <strong>Espace Prof</strong>
+          <strong>Espace Enseignant </strong>
           <small>ISIS Évaluations</small>
         </div>
       </div>
@@ -49,13 +49,16 @@ defineProps<{
 <style scoped>
 .sidebar {
   width: 215px;
-  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   background: #f7f6fb;
   border-right: 1px solid #eceaf5;
   padding: 16px 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: auto;
 }
 
 .brand {

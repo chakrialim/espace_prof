@@ -1,5 +1,5 @@
 <template>
-  <article class="semester-card">
+  <article class="semester-card" role="button" tabindex="0" @click="handleClick" @keydown.enter="handleClick">
     <div class="left-badge">{{ semester.label }}</div>
 
     <div class="content">
@@ -7,7 +7,7 @@
         <div>
           <h3>{{ semester.title }}</h3>
         </div>
-        <button class="arrow" type="button" aria-label="Voir le détail">›</button>
+        <span class="arrow" aria-label="Voir le détail">›</span>
       </div>
 
       <div class="progress-row">
@@ -21,7 +21,11 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const props = defineProps<{
   semester: {
     id: number
     label: string
@@ -30,7 +34,20 @@ defineProps<{
     total: number
     progress: number
   }
+  year?: number
+  promo?: string
 }>()
+
+function handleClick() {
+  router.push({
+    name: 'Enseignements',
+    query: {
+      year: props.year ?? 2025,
+      semester: props.semester.title,
+      promo: props.promo ?? '',
+    },
+  })
+}
 </script>
 
 <style scoped>
@@ -42,11 +59,15 @@ defineProps<{
   border-radius: 14px;
   padding: 16px;
   box-shadow: 0 10px 24px rgba(18, 14, 58, 0.08);
-  transition: box-shadow 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+  cursor: pointer;
 }
 
 .semester-card:hover {
   box-shadow: 0 12px 28px rgba(18, 14, 58, 0.12);
+  transform: translateY(-2px);
 }
 
 .left-badge {
@@ -83,6 +104,7 @@ h3 {
   font-size: 24px;
   cursor: pointer;
   padding: 0;
+  pointer-events: none;
 }
 
 .progress-row {
