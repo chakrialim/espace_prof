@@ -1,0 +1,112 @@
+<template>
+  <section>
+    <h2 class="title">Selectionnez une annee academique</h2>
+
+    <div class="grid">
+      <button
+        v-for="year in years"
+        :key="year.id"
+        class="year-button"
+        type="button"
+        @click="handleYearClick(year.start)"
+      >
+        <AnneeAcademique :start-year="year.start" :end-year="year.end" />
+      </button>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import AnneeAcademique from '@/components/AnneeAcademique.vue'
+
+const router = useRouter()
+
+const emit = defineEmits<{
+  yearSelect: [year: number]
+}>()
+
+defineProps<{
+  years: Array<{
+    id: number
+    start: number
+    end: number
+  }>
+}>()
+
+function handleYearClick(year: number) {
+  emit('yearSelect', year)
+
+  // Navigate to semesters page after 300ms to show selection feedback
+  setTimeout(() => {
+    router.push({
+      name: 'Semesters',
+      query: { year },
+    })
+  }, 300)
+}
+</script>
+
+<style scoped>
+.title {
+  margin: 18px 0 14px;
+  color: #20174f;
+  font-size: 36px;
+  line-height: 1.15;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.year-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.year-button:hover {
+  transform: translateY(-4px);
+}
+
+.year-button:active {
+  transform: translateY(-2px);
+}
+
+.grid :deep(.academic-year-card) {
+  width: 100%;
+  min-height: 78px;
+}
+
+.grid :deep(.year-label) {
+  font-size: 38px;
+}
+
+@media (max-width: 1200px) {
+  .title {
+    font-size: 32px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .title {
+    font-size: 26px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid :deep(.year-label) {
+    font-size: 30px;
+  }
+}
+</style>
