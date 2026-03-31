@@ -1,35 +1,34 @@
+<!-- EnseignementList.vue -->
 <template>
   <section class="ue-list">
     <h2 class="title">Enseignements – {{ promoName }}</h2>
-    <EnseignementCard
-      v-for="ue in ues"
-      :key="ue.id"
-      :ue="ue"
-      @click="emit('ue-select', ue)"
-    />
+    <EnseignementCard v-for="ue in ues" :key="ue.id" :ue="ue" @click="emit('ue-select', ue)" />
   </section>
 </template>
 
 <script setup lang="ts">
 import EnseignementCard from './EnseignementCard.vue'
 
+type UE = {
+  id: number
+  code: string
+  title: string
+  subtitle: string
+  progress: number
+  completed?: number
+  total?: number
+  matieres?: number
+  icon?: 'book' | 'code' | 'translate' | 'people'
+  status?: 'en-cours' | 'planifie' | 'a-planifier'
+}
+
 defineProps<{
   promoName?: string
-  ues: Array<{
-    id: number
-    code: string
-    title: string
-    subtitle: string
-    progress: number
-    completed?: number
-    total?: number
-    matieres?: number
-    icon?: 'book' | 'code' | 'translate' | 'people'
-  }>
+  ues: UE[]
 }>()
 
 const emit = defineEmits<{
-  'ue-select': [ue: { id: number; code: string; title: string }]
+  'ue-select': [ue: UE]
 }>()
 </script>
 

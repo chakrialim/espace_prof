@@ -27,8 +27,8 @@ import HistoryTopBar from '@/components/HistoryTopBar.vue'
 import AcademicYearList from '@/components/AcademicYearList.vue'
 
 const enseignant = reactive({
-  prenom: '',
-  nom: '',
+  prenom: 'Jean',
+  nom: 'Dupont',
   email: 'prof@univ-jfc.fr',
 })
 
@@ -47,7 +47,7 @@ const selectedYear = ref<number | null>(null)
 const menuItems = computed(() => [
   { key: 'home', label: 'Accueil', to: '/enseignant', active: route.path === '/enseignant' },
   { key: 'history', label: 'Historique', to: '/history', active: route.path === '/history' },
-  { key: 'profile', label: 'Mon Profil' },
+  { key: 'profile', label: 'Mon Profil', to: '/profil', active: route.path === '/profil' },
 ])
 
 const academicYears = ref([
@@ -73,7 +73,7 @@ function handleYearSelect(year: number) {
 .page-layout {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 215px 1fr;
+  grid-template-columns: auto 1fr;
   background: #f4f3f8;
 }
 

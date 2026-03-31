@@ -7,6 +7,9 @@ import HistoryPage from '../views/HistoryPage.vue'
 import SemesterPage from '../views/SemesterPage.vue'
 import FilierePage from '../views/FilierePage.vue'
 import EnseignementsPage from '../views/EnseignementsPage.vue'
+import ProfilPage from '../views/ProfilPage.vue'
+import PlanningPage from '../views/PlanningPage.vue'
+import ResultatsEnseignementPage from '../views/ResultatsEnseignementPage.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
@@ -15,6 +18,9 @@ const routes = [
   { path: '/semesters', name: 'Semesters', component: SemesterPage },
   { path: '/filiere', name: 'Filiere', component: FilierePage },
   { path: '/enseignements', name: 'Enseignements', component: EnseignementsPage },
+  { path: '/profil', name: 'Profil', component: ProfilPage },
+  { path: '/enseignant/planning', name: 'Planning', component: PlanningPage },
+  { path: '/profil/resultats/:code', name: 'ResultatsEnseignement', component: ResultatsEnseignementPage },
   // Catch-all
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]

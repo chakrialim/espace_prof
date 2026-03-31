@@ -8,7 +8,7 @@ import EnseignementsList from '../components/EnseignementsList.vue'
 const enseignant = reactive({
   prenom: 'Jean',
   nom: 'Dupont',
-  email: 'prof@univ-jfc.fr',
+  email: 'jean.dupont@univ-jfc.fr',
 })
 
 const academicYear = reactive({
@@ -24,7 +24,7 @@ const router = useRouter()
 const menuItems = computed(() => [
   { key: 'home', label: 'Accueil', to: '/enseignant', active: route.path === '/enseignant' },
   { key: 'history', label: 'Historique', to: '/history', active: route.path === '/history' },
-  { key: 'profile', label: 'Mon Profil' },
+  { key: 'profile', label: 'Mon Profil', to: '/profil', active: route.path === '/profil' },
 ])
 
 // Enseignements groupés par promotion (réactif — à remplacer par appel API)
@@ -33,23 +33,78 @@ const promotions = ref([
     id: 'fie3',
     name: 'FIE 3',
     ues: [
-      { id: 1, code: 'UE501', title: 'Fondamentaux', subtitle: 'Mathématiques et sciences de base', progress: 75, completed: 45, total: 60, matieres: 2, icon: 'book' as const },
-      { id: 2, code: 'UE502', title: 'Informatique', subtitle: 'Développement logiciel et systèmes', progress: 87, completed: 52, total: 60, matieres: 3, icon: 'code' as const },
+      {
+        id: 1,
+        code: 'E3-2-IN3',
+        title: 'Conception centrée utilisateur',
+        subtitle: 'E3-2-IN Ingénierie numérique',
+        progress: 75,
+        completed: 45,
+        total: 60,
+        matieres: 2,
+        icon: 'book' as const,
+        status: 'en-cours' as const,
+      },
+      {
+        id: 2,
+        code: 'E3-2-IS-1',
+        title: "Systèmes d'information en santé",
+        subtitle: 'E3-2-IS Ingénierie et Santé',
+        progress: 0,
+        completed: 0,
+        total: 60,
+        matieres: 3,
+        icon: 'code' as const,
+        status: 'planifie' as const,
+      },
     ],
   },
   {
     id: 'fie4',
     name: 'FIE 4',
     ues: [
-      { id: 3, code: 'UE503', title: 'Langues & Communication', subtitle: 'Anglais technique et communication', progress: 63, completed: 38, total: 60, matieres: 2, icon: 'translate' as const },
-      { id: 4, code: 'UE504', title: 'Management & Projet', subtitle: 'Gestion de projet et méthodologies', progress: 33, completed: 20, total: 60, matieres: 2, icon: 'people' as const },
+      {
+        id: 3,
+        code: 'E4-2-IMTNS-4',
+        title: 'Outils d’analyse et de modélisation des flux en santé',
+        subtitle: 'E4-2-IMTNS - Ingénierie et Management de la Transformation Numérique en Santé',
+        progress: 87,
+        completed: 52,
+        total: 60,
+        matieres: 2,
+        icon: 'translate' as const,
+        status: 'en-cours' as const,
+      },
+      {
+        id: 4,
+        code: 'E4-1-MC-3',
+        title: 'Patrons de conception',
+        subtitle: 'E4-1-MC Management et Conception',
+        progress: 0,
+        completed: 0,
+        total: 60,
+        matieres: 2,
+        icon: 'people' as const,
+        status: 'planifie' as const,
+      },
     ],
   },
   {
     id: 'fia3',
     name: 'FIA 3',
     ues: [
-      { id: 5, code: 'UE502', title: 'Informatique', subtitle: 'Développement logiciel et systèmes', progress: 90, completed: 54, total: 60, matieres: 3, icon: 'code' as const },
+      {
+        id: 5,
+        code: 'A3-ISI2-2',
+        title: "Outils d'ingéniérie logicielle",
+        subtitle: "A3-ISI2 - Informatique et systèmes d'information 2",
+        progress: 0,
+        completed: 0,
+        total: 60,
+        matieres: 3,
+        icon: 'code' as const,
+        status: 'a-planifier' as const,
+      },
     ],
   },
 ])
@@ -57,6 +112,17 @@ const promotions = ref([
 function handleMenuSelect(item: { to?: string }) {
   if (!item.to || item.to === route.path) return
   router.push(item.to)
+}
+
+function handleUeSelect(promo: { id: string }, ue: { id: number }) {
+  router.push({
+    name: 'Planning',
+    query: { promo: promo.id, ueId: ue.id },
+  })
+}
+
+function goToMatieresCloses() {
+  router.push({ path: '/profil', query: { highlight: 'closes' } })
 }
 </script>
 
@@ -69,7 +135,7 @@ function handleMenuSelect(item: { to?: string }) {
     <main class="dashboard-zone">
       <header class="dashboard-header">
         <div class="left">
-          <h1>Bonjour, Professeur {{ enseignant.prenom }} 👋</h1>
+          <h1>Bonjour, {{ enseignant.prenom }} {{ enseignant.nom }} 👋</h1>
           <p class="sub">Espace enseignant</p>
           <p class="breadcrumb">⌂ Accueil</p>
         </div>
@@ -77,15 +143,20 @@ function handleMenuSelect(item: { to?: string }) {
         <div class="user-box">
           <span class="role">{{ role }}</span>
           <span class="email">{{ enseignant.email }}</span>
+          <button class="btn-closes" @click="goToMatieresCloses">
+            Voir les évaluations clôturées
+          </button>
         </div>
       </header>
 
       <section class="promos-section">
+        <AnneeAcademique :start="academicYear.start" :end="academicYear.end" />
         <EnseignementsList
           v-for="promo in promotions"
           :key="promo.id"
           :promo-name="promo.name"
           :ues="promo.ues"
+          @ue-select="(ue) => handleUeSelect(promo, ue)"
         />
       </section>
     </main>
@@ -96,7 +167,7 @@ function handleMenuSelect(item: { to?: string }) {
 .page-layout {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: auto 1fr;
   background: #f4f3f8;
   width: 100%;
 }
@@ -173,6 +244,30 @@ function handleMenuSelect(item: { to?: string }) {
   gap: 8px;
   max-width: 860px;
   width: 100%;
+}
+
+.btn-closes {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #b9aaf7;
+  border: 1.5px solid #cdb8e6;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #311d7a;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s;
+}
+
+.btn-closes:hover {
+  background: #d9d4f0;
+  border-color: #937fd4;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 1200px) {

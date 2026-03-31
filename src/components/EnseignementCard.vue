@@ -1,8 +1,8 @@
+<!-- EnseignementCard.vue -->
 <template>
   <article class="ue-card" @click="emit('click')">
     <!-- Icon -->
     <div class="left-icon">
-      <!-- Book icon for default -->
       <svg
         v-if="ue.icon === 'book' || !ue.icon"
         viewBox="0 0 24 24"
@@ -17,7 +17,6 @@
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
       </svg>
-      <!-- Code icon -->
       <svg
         v-else-if="ue.icon === 'code'"
         viewBox="0 0 24 24"
@@ -32,7 +31,6 @@
         <polyline points="16 18 22 12 16 6" />
         <polyline points="8 6 2 12 8 18" />
       </svg>
-      <!-- Translate / language icon -->
       <svg
         v-else-if="ue.icon === 'translate'"
         viewBox="0 0 24 24"
@@ -51,7 +49,6 @@
         <path d="M22 22l-5-10-5 10" />
         <path d="M14 18h6" />
       </svg>
-      <!-- People / management icon -->
       <svg
         v-else-if="ue.icon === 'people'"
         viewBox="0 0 24 24"
@@ -74,7 +71,9 @@
     <div class="content">
       <div class="meta">
         <span class="code-badge">{{ ue.code }}</span>
-        <span v-if="ue.matieres" class="matieres">{{ ue.matieres }} matière{{ ue.matieres > 1 ? 's' : '' }}</span>
+        <span v-if="ue.matieres" class="matieres"
+          >{{ ue.matieres }} matière{{ ue.matieres > 1 ? 's' : '' }}</span
+        >
       </div>
 
       <div class="top-row">
@@ -82,7 +81,61 @@
           <h3>{{ ue.title }}</h3>
           <p class="subtitle">{{ ue.subtitle }}</p>
         </div>
-        <span class="arrow">›</span>
+        <div class="right-col">
+          <!-- Status tag -->
+          <span v-if="ue.status" class="status-tag" :class="`status-tag--${ue.status}`">
+            <!-- En cours -->
+            <svg
+              v-if="ue.status === 'en-cours'"
+              viewBox="0 0 24 24"
+              width="11"
+              height="11"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <!-- Planifié -->
+            <svg
+              v-else-if="ue.status === 'planifie'"
+              viewBox="0 0 24 24"
+              width="11"
+              height="11"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <!-- À planifier -->
+            <svg
+              v-else-if="ue.status === 'a-planifier'"
+              viewBox="0 0 24 24"
+              width="11"
+              height="11"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            {{ statusLabel }}
+          </span>
+          <span class="arrow">›</span>
+        </div>
       </div>
 
       <div class="progress-row">
@@ -92,15 +145,19 @@
         <span class="pct">{{ ue.progress }}%</span>
       </div>
 
-      <p v-if="ue.completed != null && ue.total" class="evals">{{ ue.completed }}/{{ ue.total }} évaluations reçues</p>
+      <p v-if="ue.completed != null && ue.total" class="evals">
+        {{ ue.completed }}/{{ ue.total }} évaluations reçues
+      </p>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const emit = defineEmits<{ click: [] }>()
 
-defineProps<{
+const props = defineProps<{
   ue: {
     id: number
     code: string
@@ -111,8 +168,22 @@ defineProps<{
     total?: number
     matieres?: number
     icon?: 'book' | 'code' | 'translate' | 'people'
+    status?: 'en-cours' | 'planifie' | 'a-planifier'
   }
 }>()
+
+const statusLabel = computed(() => {
+  switch (props.ue.status) {
+    case 'en-cours':
+      return 'En cours'
+    case 'planifie':
+      return 'Planifié'
+    case 'a-planifier':
+      return 'À planifier'
+    default:
+      return ''
+  }
+})
 </script>
 
 <style scoped>
@@ -183,6 +254,14 @@ defineProps<{
   gap: 8px;
 }
 
+.right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 h3 {
   margin: 0;
   font-size: 20px;
@@ -201,10 +280,36 @@ h3 {
   color: #9893b0;
   font-size: 22px;
   line-height: 1;
-  flex-shrink: 0;
-  margin-top: 2px;
 }
 
+/* ── Status tag ── */
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 3px 9px 3px 7px;
+  white-space: nowrap;
+}
+
+.status-tag--en-cours {
+  background: #eaf6ee;
+  color: #2a9151;
+}
+
+.status-tag--planifie {
+  background: #eef3ff;
+  color: #3b62d4;
+}
+
+.status-tag--a-planifier {
+  background: #fff2f0;
+  color: #d44a35;
+}
+
+/* ── Progress ── */
 .progress-row {
   display: flex;
   align-items: center;

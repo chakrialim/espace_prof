@@ -34,9 +34,9 @@ const route = useRoute()
 const router = useRouter()
 
 const enseignant = reactive({
-  prenom: '',
-  nom: '',
-  email: 'prof@univ-jfc.fr',
+  prenom: 'Jean',
+  nom: 'Dupont',
+  email: 'jean.dupont@univ-jfc.fr',
 })
 
 const role = ref('Espace Enseignant')
@@ -44,7 +44,7 @@ const role = ref('Espace Enseignant')
 const menuItems = computed(() => [
   { key: 'home', label: 'Accueil', to: '/enseignant', active: route.path === '/enseignant' },
   { key: 'history', label: 'Historique', to: '/history', active: route.path === '/history' },
-  { key: 'profile', label: 'Mon Profil' },
+  { key: 'profile', label: 'Mon Profil', to: '/profil', active: route.path === '/profil' },
 ])
 
 // Query params
@@ -132,7 +132,7 @@ function handleUeSelect(ue: { id: number; code: string; title: string }) {
 .page-layout {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 215px 1fr;
+  grid-template-columns: auto 1fr;
   background: #f4f3f8;
 }
 
